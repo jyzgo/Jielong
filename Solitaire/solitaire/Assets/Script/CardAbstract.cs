@@ -67,30 +67,42 @@ public class CardAbstract : MonoBehaviour
         }
         return card;
     }
-    public void PutCard(CardAbstract card,bool isAction = true)
+
+    public Vector3 offsetPos;
+    public Vector3 originalPos;
+
+    public void PutCard(CardAbstract otherCard)
     {
-        if(card.cardState == CardState.InPile)
+
+
+        var cardAction = new CardActionImp();
+        cardAction.Init(this, otherCard);
+        cardAction.DoAction();
+        LevelMgr.current.AddAction(cardAction);
+
+
+        return;
+
+        if(otherCard.cardState == CardState.InPile)
         {
-            LevelMgr.current.RemoveFromPile(card.gameObject);
+            LevelMgr.current.RemoveFromPile(otherCard.gameObject);
             LevelMgr.current.RefreshPileReady();
 
         }
 
         if(cardState == CardState.InTarget)
         {
-            card.nextCard = null; 
+            otherCard.nextCard = null; 
         }
-        card.cardState = cardState;
-        nextCard = card;
+        otherCard.cardState = cardState;
+        nextCard = otherCard;
         
-        card.transform.parent = transform;
-        card.DetachCardFromOriginal();
+        otherCard.transform.parent = transform;
+        otherCard.DetachCardFromOriginal();
 
-        card.preCard = this;
-        if (isAction)
-        {
-            card.RunAction(new MTMoveToWorld(0.1f, GetNextPos()));
-        }
+        otherCard.preCard = this;
+     
+        otherCard.RunAction(new MTMoveToWorld(0.1f, GetNextPos()));
 
     }
 

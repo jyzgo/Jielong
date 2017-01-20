@@ -111,8 +111,7 @@ public class Card : CardAbstract {
 
     float downTime = 0f;
     
-    Vector3 offsetPos;
-    Vector3 originalPos;
+
     void OnMouseDown()
     {
         if (disableTouch)
@@ -120,7 +119,7 @@ public class Card : CardAbstract {
             return;
         }
 
-        var curReadyList = LevelMgr.current.PileReadyList;
+        var curReadyList = LevelMgr.current._pileReadyList;
         isCtrlAble = false;
         if (!curReadyList.Contains(gameObject))
         {
@@ -142,8 +141,6 @@ public class Card : CardAbstract {
             Vector3 objPos = Camera.main.ScreenToWorldPoint(mousePosition);
             offsetPos = transform.position - objPos;
             originalPos = transform.position;
-
-
 
         }
   
@@ -215,19 +212,23 @@ public class Card : CardAbstract {
                 card = en;
             }else
             {
-                var curPos = transform.position;
-                var curPos2D = new Vector2(curPos.x, curPos.y);
-
-                var otherPos = en.transform.position;
-                var other2D = new Vector2(otherPos.x, otherPos.y);
-
-                var cardPos = card.transform.position;
-                var cardPos2D = new Vector2(cardPos.x, cardPos.y);
-
-                if(Vector2.Distance(other2D,curPos2D) < Vector2.Distance(cardPos2D,curPos2D))
+                if(Vector3.Distance(transform.position,en.transform.position) < Vector3.Distance(transform.position,card.transform.position))
                 {
                     card = en;
                 }
+                //var curPos = transform.position;
+                //var curPos2D = new Vector2(curPos.x, curPos.y);
+
+                //var otherPos = en.transform.position;
+                //var other2D = new Vector2(otherPos.x, otherPos.y);
+
+                //var cardPos = card.transform.position;
+                //var cardPos2D = new Vector2(cardPos.x, cardPos.y);
+
+                //if(Vector2.Distance(other2D,curPos2D) < Vector2.Distance(cardPos2D,curPos2D))
+                //{
+                //    card = en;
+                //}
             }
         }
 
@@ -242,6 +243,7 @@ public class Card : CardAbstract {
 
             }else
             {
+                Debug.Log("card Name is " + card.name);
                 BackToOriginalPos();
             }
             
@@ -272,18 +274,26 @@ public class Card : CardAbstract {
 
     public override bool isCardPutable(CardAbstract card)
     {
+       if(cardState == CardState.InTarget)
+        {
+            card = card.GetTopCard();
+        }
+
         if(cardState == CardState.InPile)
         {
+            Debug.Log("in pile ");
             return false;
         }
 
         if(nextCard != null)
         {
+            Debug.Log("nextcardNot null");
             return false;
         }
 
         if(IsPutAble() != true)
         {
+            Debug.Log("unputable");
             return false;
         }
 
@@ -314,7 +324,7 @@ public class Card : CardAbstract {
         {
             return true;
         }
-
+        Debug.Log("nothing");
         return false;
     }
 

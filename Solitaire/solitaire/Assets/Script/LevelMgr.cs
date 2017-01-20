@@ -25,6 +25,8 @@ public class LevelMgr : MonoBehaviour {
 		Lose
 	}
 
+    List<CardAction> _CardActions = new List<CardAction>();
+
     public GameObject CardPrefab;
 
     public Transform start;
@@ -46,7 +48,7 @@ public class LevelMgr : MonoBehaviour {
     public Transform Pile;
 
     public Transform[] PileReadyTrans;
-    public List<GameObject> PileReadyList = new List<GameObject>();
+    public List<GameObject> _pileReadyList = new List<GameObject>();
 
 
     public CardStruct GetCard(CardColor co,int CardNum)
@@ -151,10 +153,11 @@ public class LevelMgr : MonoBehaviour {
 
 
     
-    void ResetGame()
+    public void ResetGame()
     {
         CardList.RandomShuffle<GameObject>();
-        PileReadyList.Clear();
+        _pileReadyList.Clear();
+        _CardActions.Clear();
 
         CleanCardPlatform();
         foreach (var curCard in CardList)
@@ -165,8 +168,6 @@ public class LevelMgr : MonoBehaviour {
             curCardSc.nextCard = null;
             curCard.transform.position = Vector3.zero;
             curCard.transform.parent = null;
-
-
         }
 
         foreach(var platform in PlatformPlace)
@@ -194,9 +195,6 @@ public class LevelMgr : MonoBehaviour {
                 index++;
             } 
         }
-
-        
-
         for(int i  = 0; i <CardPlatform.Length;i ++)
         {
             var curCardList = CardPlatform[i];
@@ -242,22 +240,30 @@ public class LevelMgr : MonoBehaviour {
     }
 
 
-    void OnGUI()
+    public void AddAction(CardAction action)
     {
-        if (GUILayout.Button("Restart"))
+        _CardActions.Add(action);
+    }
+
+    public void ReverseAction()
+    {
+        if(_CardActions.Count > 0)
         {
-            ResetGame();
+            var lastAction = _CardActions[_CardActions.Count - 1];
+            _CardActions.Remove(lastAction);
+            lastAction.ReverseAction();
         }
 
-        if (GUILayout.Button("Refresh View"))
+    }
+
+    public void RefreshCardView()
+    {
+        foreach (var card in CardList)
         {
-            foreach (var card in CardList)
+            var cardSc = card.GetComponent<Card>();
+            if (cardSc != null)
             {
-                var cardSc = card.GetComponent<Card>();
-                if(cardSc != null)
-                {
-                    cardSc.UpdateCardView();
-                }
+                cardSc.UpdateCardView();
             }
         }
     }
@@ -268,9 +274,9 @@ public class LevelMgr : MonoBehaviour {
         for (int i = index; i < CardList.Count; i++)
         {
             var curCard = CardList[i];
-            pileList.Add(curCard);
+            _pileList.Add(curCard);
 
-            curCard.transform.position = Pile.transform.position + Vector3.back * 0.1f; 
+            curCard.transform.position = GetPileCardPos();
             curCard.transform.parent = Pile.transform;
             var cardSc = curCard.GetComponent<CardAbstract>();
             cardSc.cardState = CardState.InPile;
@@ -278,22 +284,29 @@ public class LevelMgr : MonoBehaviour {
 
     }
 
+
+    public Vector3 GetPileCardPos()
+    {
+
+        return Pile.transform.position + Vector3.back * 0.1f;
+    }
     public void FlipPile()
     {
-        if (pileList.Count > 0)
+        if (_pileList.Count > 0)
         {
-            var lastCard = pileList[pileList.Count - 1];
-            pileList.Remove(lastCard);
-            PileReadyList.Add(lastCard);
-            RefreshPileReady();
+            var lastCard = _pileList[_pileList.Count - 1];
+            var flipCardAction = new FlipCardAction();
+            flipCardAction.Init(lastCard);
+            flipCardAction.DoAction();
+            AddAction(flipCardAction);
         }
     }
 
     public void RefreshPileReady()
     {
-        for(int i  = PileReadyList.Count-1,j = 2; i >= 0 ; i --,j--)
+        for(int i  = _pileReadyList.Count-1,j = 2; i >= 0 ; i --,j--)
         {
-            var curPileCard = PileReadyList[i].GetComponent<CardAbstract>();
+            var curPileCard = _pileReadyList[i].GetComponent<CardAbstract>();
             if (j >= 0)
             {
                 var curPileTrans = PileReadyTrans[j];
@@ -315,30 +328,31 @@ public class LevelMgr : MonoBehaviour {
 
     public void RefreshPile()
     {
-        pileList.Clear();
-        for(int i = PileReadyList.Count-1; i  >=0; i --)
+        _pileList.Clear();
+        for(int i = _pileReadyList.Count-1; i  >=0; i --)
         {
-            var curCard = PileReadyList[i];
-            pileList.Add(curCard);
+            var curCard = _pileReadyList[i];
+            _pileList.Add(curCard);
             curCard.transform.position = Pile.transform.position + Vector3.back * 0.1f;
             curCard.transform.parent = Pile.transform;
             curCard.transform.eulerAngles = new Vector3(0, 180, 0);
         }
-        PileReadyList.Clear();
+        _pileReadyList.Clear();
     }
 
 
     public void RemoveFromPile(GameObject card)
     {
-        pileList.Remove(card);
-        PileReadyList.Remove(card);
+        
+        _pileList.Remove(card);
+        _pileReadyList.Remove(card);
 
         
     }
 
     public int pileIndex = 0;
     
-    List<GameObject> pileList = new List<GameObject>();
+    public List<GameObject> _pileList = new List<GameObject>();
 
 
 	void Default_Enter()
