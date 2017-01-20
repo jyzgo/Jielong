@@ -110,6 +110,7 @@ public class LevelMgr : MonoBehaviour {
                 var cardSc = gb.GetComponent<Card>();
                 cardSc.cardColor = _cardColr;
                 cardSc.CardNum = i + 1;
+                gb.name = "card " +  _cardColr.ToString() + (i + 1).ToString();
                 cardSc.UpdateCardView();
                 gb.transform.position = new Vector3(i * 0.5f, (int)_cardColr, i * -0.5f);
                 CardList.Add(gb);
@@ -211,8 +212,8 @@ public class LevelMgr : MonoBehaviour {
                 {
                     seq = new MTSequence(
                         new MTDelayTime(1f), 
-                        new MTMoveToWorld(i * 0.05f + j * 0.04f, tarPos), 
-                        new MTRotateTo(0.1f, new Vector3(0, 0, 0)),
+                        new MTMoveToWorld(i * 0.05f + j * 0.04f , tarPos), 
+                        new MTRotateTo(0.2f , new Vector3(0, 0, 0)),
                         new MTDelayTime(0.1f),
                         new MTCallFunc(()=> curCard.transform.eulerAngles = Vector3.zero));
                 }else
@@ -227,9 +228,10 @@ public class LevelMgr : MonoBehaviour {
                 }
 
                 var cardSc = curCard.GetComponent<CardAbstract>();
-                preCard.PutCard(cardSc,false);
+                //preCard.PutCard(cardSc,false);
                 cardSc.cardState = CardState.InPlatform;
-                cardSc.preCard = preCard; 
+                cardSc.preCard = preCard;
+                preCard.nextCard = cardSc;
                 curCard.RunActions(seq);
             }
         }
@@ -268,7 +270,7 @@ public class LevelMgr : MonoBehaviour {
             var curCard = CardList[i];
             pileList.Add(curCard);
 
-            curCard.transform.position = Pile.transform.position; 
+            curCard.transform.position = Pile.transform.position + Vector3.back * 0.1f; 
             curCard.transform.parent = Pile.transform;
             var cardSc = curCard.GetComponent<CardAbstract>();
             cardSc.cardState = CardState.InPile;
@@ -278,10 +280,13 @@ public class LevelMgr : MonoBehaviour {
 
     public void FlipPile()
     {
-        var lastCard = pileList[pileList.Count-1];
-        pileList.Remove(lastCard);
-        PileReadyList.Add(lastCard);
-        RefreshPileReady();
+        if (pileList.Count > 0)
+        {
+            var lastCard = pileList[pileList.Count - 1];
+            pileList.Remove(lastCard);
+            PileReadyList.Add(lastCard);
+            RefreshPileReady();
+        }
     }
 
     public void RefreshPileReady()
@@ -295,11 +300,13 @@ public class LevelMgr : MonoBehaviour {
                
                 curPileCard.transform.parent = curPileTrans;
                 curPileCard.transform.localRotation = Quaternion.identity;
+
+                curPileCard.StopAllActions();
                 curPileCard.RunAction(new MTMoveTo(0.1f, Vector3.back * 0.1f));
             }else
             {
-                curPileCard.transform.localPosition = new Vector3(0, 0, 1);
-                curPileCard.transform.eulerAngles = new Vector3(0, 180f, 0);
+                curPileCard.transform.localPosition = new Vector3(0, 0, 50-i);
+                //curPileCard.transform.eulerAngles = new Vector3(0, 180f, 0);
             }
             
         }
@@ -313,8 +320,9 @@ public class LevelMgr : MonoBehaviour {
         {
             var curCard = PileReadyList[i];
             pileList.Add(curCard);
-            curCard.transform.position = Pile.transform.position;
+            curCard.transform.position = Pile.transform.position + Vector3.back * 0.1f;
             curCard.transform.parent = Pile.transform;
+            curCard.transform.eulerAngles = new Vector3(0, 180, 0);
         }
         PileReadyList.Clear();
     }

@@ -31,9 +31,11 @@ public class Card : CardAbstract {
 	// Use this for initialization
 	void Start () {
 
+        _disAble = DisableCard();
         UpdateCardView();
 	}
 
+    IEnumerator _disAble;
     public void UpdateCardView()
     {
         CardStruct cardData = LevelMgr.current.GetCard(cardColor, CardNum);
@@ -88,6 +90,7 @@ public class Card : CardAbstract {
 	// Update is called once per frame
     void OnMouseDrag()
     {
+
         if (isUp())
         {
             if (isCtrlAble)
@@ -112,6 +115,11 @@ public class Card : CardAbstract {
     Vector3 originalPos;
     void OnMouseDown()
     {
+        if (disableTouch)
+        {
+            return;
+        }
+
         var curReadyList = LevelMgr.current.PileReadyList;
         isCtrlAble = false;
         if (!curReadyList.Contains(gameObject))
@@ -127,27 +135,37 @@ public class Card : CardAbstract {
         }
         if (isCtrlAble)
         {
+
             isFloating = true;
             downTime = Time.time;
             Vector3 mousePosition = new Vector3(Input.mousePosition.x, Input.mousePosition.y, transform.position.z);
             Vector3 objPos = Camera.main.ScreenToWorldPoint(mousePosition);
             offsetPos = transform.position - objPos;
             originalPos = transform.position;
+
+
+
         }
   
 
     }
 
+
+
     const float pressInterval = 0.1f;
     void OnMouseUp()
     {
+        
+
         isFloating = false;
+
         if (isCtrlAble)
         {
             if (Time.time - downTime < 0.2f)
             {
+                
                 Press();
-                // BackToOriginalPos();
+                BlockTouch();
             }
             else
             {
@@ -157,6 +175,16 @@ public class Card : CardAbstract {
         isCtrlAble = false;
     }
 
+    bool disableTouch = false;
+    float disableTime = 0.2f;
+    IEnumerator DisableCard()
+    {
+        disableTouch = true;
+        yield return new WaitForSeconds(disableTime);
+        disableTouch = false;
+    }
+
+
     void Press()
     {
         if(cardState == CardState.InPile)
@@ -164,8 +192,15 @@ public class Card : CardAbstract {
             if (isUp() == false)
             {
                 LevelMgr.current.FlipPile();
+            }else
+            {
+                BackToOriginalPos();
             }
+        }else
+        {
+            BackToOriginalPos();
         }
+
         
     }
 
@@ -196,6 +231,8 @@ public class Card : CardAbstract {
             }
         }
 
+       
+
         if(card != null)
         {
             var cardSc = card.GetComponent<CardAbstract>();
@@ -215,8 +252,17 @@ public class Card : CardAbstract {
 
     }
 
+
+    void BlockTouch()
+    {
+        StopCoroutine(_disAble);
+        _disAble = DisableCard();
+        StartCoroutine(_disAble);
+    }
     void BackToOriginalPos()
     {
+        BlockTouch();
+
         this.RunAction(new MTMoveToWorld(0.2f, originalPos));
 
     }
@@ -226,7 +272,10 @@ public class Card : CardAbstract {
 
     public override bool isCardPutable(CardAbstract card)
     {
-
+        if(cardState == CardState.InPile)
+        {
+            return false;
+        }
 
         if(nextCard != null)
         {
@@ -234,6 +283,11 @@ public class Card : CardAbstract {
         }
 
         if(IsPutAble() != true)
+        {
+            return false;
+        }
+
+        if(cardState != CardState.InTarget && card.cardState == CardState.InTarget)
         {
             return false;
         }

@@ -20,7 +20,7 @@ public class CardAbstract : MonoBehaviour
     const float zOffset = -0.1f;
     readonly Vector3 nextCardPos = new Vector3(0, -0.2f, zOffset);
     readonly Vector3 inTargetPos = new Vector3(0, 0, zOffset);
-    readonly Vector3 inPlatformUpPos = new Vector3(0, -0.5f, zOffset);
+    readonly Vector3 inPlatformUpPos = new Vector3(0, -0.3f, zOffset);
     readonly Vector3 inPlatformDownPos = new Vector3(0, -0.2f, zOffset);
 
 
@@ -35,7 +35,7 @@ public class CardAbstract : MonoBehaviour
 
         if(cardState == CardState.InTarget)
         {
-           // nextPos = inTargetPos;
+            nextPos = inTargetPos;
         }else if(cardState == CardState.InPile)
         {
             nextPos = inTargetPos;
@@ -50,12 +50,12 @@ public class CardAbstract : MonoBehaviour
             }
         }
 
-        return transform.position + nextCardPos * i;
+        return transform.position + nextPos * i;
     }
 
-    [HideInInspector]
+    //[HideInInspector]
     public CardAbstract preCard;
-    [HideInInspector]
+   // [HideInInspector]
     public CardAbstract nextCard;
 
     public CardAbstract GetTopCard()
@@ -69,17 +69,32 @@ public class CardAbstract : MonoBehaviour
     }
     public void PutCard(CardAbstract card,bool isAction = true)
     {
-        nextCard = card;
+        if(card.cardState == CardState.InPile)
+        {
+            LevelMgr.current.RemoveFromPile(card.gameObject);
+            LevelMgr.current.RefreshPileReady();
 
-        card.DetachCardFromOriginal();
-        card.transform.parent = transform;
+        }
+
+        if(cardState == CardState.InTarget)
+        {
+            card.nextCard = null; 
+        }
         card.cardState = cardState;
+        nextCard = card;
+        
+        card.transform.parent = transform;
+        card.DetachCardFromOriginal();
+
+        card.preCard = this;
         if (isAction)
         {
             card.RunAction(new MTMoveToWorld(0.1f, GetNextPos()));
         }
 
     }
+
+
 
     public void DetachCardFromOriginal()
     {
@@ -92,15 +107,12 @@ public class CardAbstract : MonoBehaviour
             }
         }
 
-        if(cardState == CardState.InPile)
-        {
-            LevelMgr.current.RemoveFromPile(gameObject);
-        }
     }
 
     public virtual void FlipCard()
     {
-        transform.eulerAngles = Vector3.zero;
+        gameObject.RunActions(new MTRotateTo(0.2f, Vector3.zero),new MTCallFunc(() => transform.eulerAngles = Vector3.zero ));
+       
     }
     protected bool isFloating = false;
 
