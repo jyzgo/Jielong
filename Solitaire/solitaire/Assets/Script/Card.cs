@@ -31,7 +31,7 @@ public class Card : CardAbstract {
 	// Use this for initialization
 	void Start () {
 
-        _disAble = DisableCard();
+        _disAble = DisableCard(0.2f);
         UpdateCardView();
 	}
 
@@ -173,11 +173,10 @@ public class Card : CardAbstract {
     }
 
     bool disableTouch = false;
-    float disableTime = 0.2f;
-    IEnumerator DisableCard()
+    IEnumerator DisableCard(float t)
     {
         disableTouch = true;
-        yield return new WaitForSeconds(disableTime);
+        yield return new WaitForSeconds(t);
         disableTouch = false;
     }
 
@@ -189,6 +188,7 @@ public class Card : CardAbstract {
             if (isUp() == false)
             {
                 LevelMgr.current.FlipPile();
+         
             }else
             {
                 FindBestCard();
@@ -211,18 +211,48 @@ public class Card : CardAbstract {
 
     void FindBestCard()
     {
+
         var bestCard = LevelMgr.current.FindTheBestCard(this);
         if(bestCard == null)
         {
-            BackToOriginalPos();
+            ShowDisableAnim();
+            return;
         }
-        else
+
+        if(bestCard.cardState == CardState.InTarget && GetTopCard() != this)
         {
-
-            bestCard.PutCard(this);
+            ShowDisableAnim();
+            return;
         }
 
+        bestCard.PutCard(this);
         
+    }
+
+    void ShowDisableAnim()
+    {
+        float shakeTime = 0.05f;
+        float shakeDis = 0.1f;
+        var finalPos = originalPos;
+        if (preCard != null)
+        {
+            finalPos = preCard.GetNextPos();
+        }
+        transform.position = finalPos;
+        var localPos = transform.localPosition;
+        var sequence = new MTSequence(new MTMoveBy(shakeTime, Vector3.left * shakeDis),
+            new MTMoveBy(shakeTime, Vector3.right * shakeDis * 2),
+            new MTMoveBy(shakeTime, Vector3.left * shakeDis * 2),
+            new MTMoveBy(shakeTime, Vector3.right * shakeDis * 2),
+            new MTMoveBy(shakeTime, Vector3.left * shakeDis * 2),
+            new MTMoveTo(shakeTime, localPos),
+            new MTCallFunc(()=>transform.localPosition = localPos)
+            );
+        this.RunAction(sequence);
+        BlockTouch(0.3f);
+
+
+        //BackToOriginalPos();
     }
 
     void Release()
@@ -277,15 +307,15 @@ public class Card : CardAbstract {
     }
 
 
-    void BlockTouch()
+    public override void BlockTouch(float t = 0.2f)
     {
         StopCoroutine(_disAble);
-        _disAble = DisableCard();
+        _disAble = DisableCard(t);
         StartCoroutine(_disAble);
     }
-    void BackToOriginalPos()
+    void BackToOriginalPos(float t =0.2f)
     {
-        BlockTouch();
+        BlockTouch(t);
 
         this.RunAction(new MTMoveToWorld(0.2f, originalPos));
 

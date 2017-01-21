@@ -23,6 +23,10 @@ public class CardAbstract : MonoBehaviour
     readonly Vector3 inPlatformUpPos = new Vector3(0, -0.3f, zOffset);
     readonly Vector3 inPlatformDownPos = new Vector3(0, -0.2f, zOffset);
 
+    public virtual void BlockTouch(float t = 0.2f)
+    {
+
+    }
 
     public virtual bool isUp()
     {

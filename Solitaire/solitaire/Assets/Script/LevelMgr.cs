@@ -148,12 +148,23 @@ public class LevelMgr : MonoBehaviour {
         }
     }
 
+
+
+
+
     List<GameObject>[] CardPlatform = new List<GameObject>[7];
+    List<CardAbstract> PlatformCardList = new List<CardAbstract>();
     void InitCardPlatform()
     {
         for(int i  = 0; i  < CardPlatform.Length; i ++)
         {
             CardPlatform[i] = new List<GameObject>();
+        }
+
+        for(int i = 0; i < PlatformPlace.Length;i ++)
+        {
+            var card = PlatformPlace[i].GetComponent<CardAbstract>();
+            PlatformCardList.Add(card);
         }
     }
 
@@ -193,18 +204,30 @@ public class LevelMgr : MonoBehaviour {
         return null;
     }
 
-    
-    float lastRestTime = -10f;
-    public void ResetGame()
+    float lastNewGameTime = -10f;
+    public void NewGame()
     {
-       
-        if(lastRestTime + 2 > Time.time)
+        if (lastNewGameTime + 2 > Time.time)
         {
             return;
         }
-        lastRestTime = Time.time;
+        lastNewGameTime = Time.time;
         CardList.RandomShuffle<GameObject>();
+        ResetGame();
+
+    }
+
+    float lastResetGame = -10f;
+    public void ResetGame()
+    {
+        if (lastResetGame + 2 > Time.time)
+        {
+            return;
+        }
+        lastResetGame = Time.time;
+
         _pileReadyList.Clear();
+        _pileList.Clear();
         _CardActions.Clear();
 
         foreach(var card in _targetList)
@@ -229,10 +252,9 @@ public class LevelMgr : MonoBehaviour {
             curCard.transform.parent = null;
         }
 
-        foreach(var platform in PlatformPlace)
+        foreach(var platform in PlatformCardList)
         {
-            var cardSc = platform.GetComponent<CardAbstract>();
-            cardSc.nextCard = null;
+            platform.nextCard = null;
         }
         
         for(int i = 0; i <CardList.Count; i ++)
@@ -343,6 +365,15 @@ public class LevelMgr : MonoBehaviour {
 
     }
 
+    public void CheckFinish()
+    {
+        if(_pileList.Count != 0 || _pileReadyList.Count != 0)
+        {
+            return;
+        }
+
+    }
+
 
     public Vector3 GetPileCardPos()
     {
@@ -372,6 +403,7 @@ public class LevelMgr : MonoBehaviour {
                
                 curPileCard.transform.parent = curPileTrans;
                 curPileCard.transform.localRotation = Quaternion.identity;
+                curPileCard.BlockTouch(0.15f);
 
                 curPileCard.StopAllActions();
                 curPileCard.RunAction(new MTMoveTo(0.1f, Vector3.back * 0.1f));
