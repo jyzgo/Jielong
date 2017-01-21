@@ -96,6 +96,8 @@ public class LevelMgr : MonoBehaviour {
     }
 
     List<GameObject> CardList = new List<GameObject>();
+    List<CardAbstract> _platformList = new List<CardAbstract>();
+    List<CardAbstract> _targetList = new List<CardAbstract>();
 
     void GenCard()
     {
@@ -118,6 +120,19 @@ public class LevelMgr : MonoBehaviour {
                 CardList.Add(gb);
             }
         }
+
+        for(int i =0; i < PlatformPlace.Length; i ++)
+        {
+            var cardAb = PlatformPlace[i].GetComponent<CardAbstract>();
+            _platformList.Add(cardAb);
+        }
+
+        for(int i = 0; i  < TargetPlace.Length; i ++)
+        {
+            var cardAb = TargetPlace[i].GetComponent<CardAbstract>();
+            _targetList.Add(cardAb);
+        }
+       
 
     }
     void CleanCard()
@@ -152,12 +167,56 @@ public class LevelMgr : MonoBehaviour {
     }
 
 
+    public CardAbstract FindTheBestCard(CardAbstract card)
+    {
+        for(int i  = 0; i < _targetList.Count; i  ++)
+        {
+            var curCard = _targetList[i].GetTopCard() ;
+            if(curCard.isCardPutable(card))
+            {
+                return curCard;
+            }
+
+        }
+
+        for(int i = 0; i < _platformList.Count;i ++)
+        {
+            var curCard = _platformList[i].GetTopCard();
+            if (curCard.isCardPutable(card))
+            {
+                return curCard;
+            }
+
+        }
+
+
+        return null;
+    }
+
     
+    float lastRestTime = -10f;
     public void ResetGame()
     {
+       
+        if(lastRestTime + 2 > Time.time)
+        {
+            return;
+        }
+        lastRestTime = Time.time;
         CardList.RandomShuffle<GameObject>();
         _pileReadyList.Clear();
         _CardActions.Clear();
+
+        foreach(var card in _targetList)
+        {
+            card.nextCard = null;
+        }
+
+        foreach(var card in _platformList)
+        {
+            card.nextCard = null;
+        }
+
 
         CleanCardPlatform();
         foreach (var curCard in CardList)

@@ -191,11 +191,35 @@ public class Card : CardAbstract {
                 LevelMgr.current.FlipPile();
             }else
             {
-                BackToOriginalPos();
+                FindBestCard();
+                
             }
         }else
         {
+            if (isUp())
+            {
+                FindBestCard();
+            }else
+            {
+                BackToOriginalPos();
+            }
+        }
+
+        
+    }
+
+
+    void FindBestCard()
+    {
+        var bestCard = LevelMgr.current.FindTheBestCard(this);
+        if(bestCard == null)
+        {
             BackToOriginalPos();
+        }
+        else
+        {
+
+            bestCard.PutCard(this);
         }
 
         
@@ -212,23 +236,20 @@ public class Card : CardAbstract {
                 card = en;
             }else
             {
-                if(Vector3.Distance(transform.position,en.transform.position) < Vector3.Distance(transform.position,card.transform.position))
+
+                var curPos = transform.position;
+                var curPos2D = new Vector2(curPos.x, curPos.y);
+
+                var otherPos = en.transform.position;
+                var other2D = new Vector2(otherPos.x, otherPos.y);
+
+                var cardPos = card.transform.position;
+                var cardPos2D = new Vector2(cardPos.x, cardPos.y);
+
+                if (Vector2.Distance(other2D, curPos2D) < Vector2.Distance(cardPos2D, curPos2D))
                 {
                     card = en;
                 }
-                //var curPos = transform.position;
-                //var curPos2D = new Vector2(curPos.x, curPos.y);
-
-                //var otherPos = en.transform.position;
-                //var other2D = new Vector2(otherPos.x, otherPos.y);
-
-                //var cardPos = card.transform.position;
-                //var cardPos2D = new Vector2(cardPos.x, cardPos.y);
-
-                //if(Vector2.Distance(other2D,curPos2D) < Vector2.Distance(cardPos2D,curPos2D))
-                //{
-                //    card = en;
-                //}
             }
         }
 
@@ -237,6 +258,7 @@ public class Card : CardAbstract {
         if(card != null)
         {
             var cardSc = card.GetComponent<CardAbstract>();
+            cardSc = cardSc.GetTopCard();
            if(cardSc.isCardPutable(this))
             {
                 cardSc.PutCard(this);
@@ -274,10 +296,10 @@ public class Card : CardAbstract {
 
     public override bool isCardPutable(CardAbstract card)
     {
-       if(cardState == CardState.InTarget)
-        {
-            card = card.GetTopCard();
-        }
+       //if(cardState == CardState.InTarget || cardState == CardState.InPlatform)
+       // {
+       //     card = card.GetTopCard();
+       // }
 
         if(cardState == CardState.InPile)
         {
@@ -304,12 +326,13 @@ public class Card : CardAbstract {
 
         if(cardState == CardState.InPlatform)
         {
-            if ((int)cardColor % 2 != (int)card.cardColor % 2 && card.CardNum == CardNum-1 && CardNum > 1)
+            if ((int)cardColor % 2 != (int)card.cardColor % 2 && card.CardNum == CardNum-1 )
             {
                 return true;
             }
             else
             {
+                Debug.Log("not met " + " this card  is " + gameObject.name + "other card is " + card);
                 return false;
             }
             
@@ -319,6 +342,7 @@ public class Card : CardAbstract {
             {
                 return true;
             }
+            Debug.Log("Not met target");
             return false;
         }else if(cardState == CardState.InPile)
         {
