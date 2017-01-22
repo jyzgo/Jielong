@@ -184,12 +184,10 @@
     <Compile Include="Assets\ResMgr.cs" />
     <Compile Include="Assets\Script\Card.cs" />
     <Compile Include="Assets\Script\CardAbstract.cs" />
-    <Compile Include="Assets\Script\CardAction\ActionInPile.cs" />
-    <Compile Include="Assets\Script\CardAction\ActionInPlatform.cs" />
-    <Compile Include="Assets\Script\CardAction\ActionInTarget.cs" />
     <Compile Include="Assets\Script\CardAction\CardAction.cs" />
     <Compile Include="Assets\Script\CardAction\CardActionImp.cs" />
     <Compile Include="Assets\Script\CardAction\FlipCardAction.cs" />
+    <Compile Include="Assets\Script\CardAction\RefreshPileAction.cs" />
     <Compile Include="Assets\Script\CardPlatformRoot.cs" />
     <Compile Include="Assets\Script\CardTargetRoot.cs" />
     <Compile Include="Assets\Script\LevelMgr.cs" />

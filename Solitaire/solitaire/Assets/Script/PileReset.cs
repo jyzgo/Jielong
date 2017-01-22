@@ -15,7 +15,6 @@ public class PileReset : MonoBehaviour {
 
     void OnMouseDown()
     {
-        Debug.Log("pile refresh");
         LevelMgr.current.RefreshPile();
 
     }

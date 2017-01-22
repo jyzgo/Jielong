@@ -99,15 +99,11 @@ public class LevelMgr : MonoBehaviour {
 
     void Awake()
 	{
-
         current = this;
         GenCard();
         CleanCard();
         InitCardPlatform();
         fsm = StateMachine<LevelState>.Initialize(this, LevelState.Playing);
-
-        
-
     }
 
     List<GameObject> CardList = new List<GameObject>();
@@ -509,16 +505,11 @@ public class LevelMgr : MonoBehaviour {
 
     public void RefreshPile()
     {
-        _pileList.Clear();
-        for(int i = _pileReadyList.Count-1; i  >=0; i --)
-        {
-            var curCard = _pileReadyList[i];
-            _pileList.Add(curCard);
-            curCard.transform.position = Pile.transform.position + Vector3.back * 0.1f;
-            curCard.transform.parent = Pile.transform;
-            curCard.transform.eulerAngles = new Vector3(0, 180, 0);
-        }
-        _pileReadyList.Clear();
+
+        var refreshPile = new RefreshPileAction();
+        refreshPile.DoAction();
+        _CardActions.Add(refreshPile);
+
     }
 
 
