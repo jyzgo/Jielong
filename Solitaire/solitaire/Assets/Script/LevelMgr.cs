@@ -6,6 +6,7 @@ using MonsterLove.StateMachine;
 using UnityEngine.UI;
 using System;
 using DG.Tweening;
+using MTUnity.Utils;
 
 [Serializable]
 public struct CardStruct
@@ -231,25 +232,18 @@ public class LevelMgr : MonoBehaviour {
 
     }
 
-    float lastResetGame = -10f;
-    public void ResetGame()
+    void CleanBoard()
     {
-        if (lastResetGame + 2 > Time.time)
-        {
-            return;
-        }
-        lastResetGame = Time.time;
-
         _pileReadyList.Clear();
         _pileList.Clear();
         _CardActions.Clear();
 
-        foreach(var card in _targetList)
+        foreach (var card in _targetList)
         {
             card.nextCard = null;
         }
 
-        foreach(var card in _platformList)
+        foreach (var card in _platformList)
         {
             card.nextCard = null;
         }
@@ -266,34 +260,95 @@ public class LevelMgr : MonoBehaviour {
             curCard.transform.parent = null;
         }
 
-        foreach(var platform in PlatformCardList)
+        foreach (var platform in PlatformCardList)
         {
             platform.nextCard = null;
         }
-        
-        for(int i = 0; i <CardList.Count; i ++)
+
+        for (int i = 0; i < CardList.Count; i++)
         {
             var curCard = CardList[i];
 
             curCard.transform.eulerAngles = new Vector3(0, 180f, 0);
             curCard.transform.position = start.position;
         }
+    }
 
+    float lastResetGame = -10f;
+    public void ResetGame()
+    {
+        if (lastResetGame + 2 > Time.time)
+        {
+            return;
+        }
+        lastResetGame = Time.time;
+        CleanScore();
+        CleanBoard();
         int index = 0;
         for(int i = 0; i < 7; i ++)
         {
             for(int j = 0; j <=i; j++ )
             {
-
                 CardPlatform[i].Add(CardList[index]);
-                
                 index++;
             } 
         }
-        for(int i  = 0; i <CardPlatform.Length;i ++)
+        PlayDealCard();
+        StartCoroutine(SetPile(index));
+    }
+
+    void CleanScore()
+    {
+
+    }
+
+    public void LoadGame(MTJSONObject js)
+    {
+
+        int index = 0;
+        for(int i= 0; i < 7; i ++)
+        {
+            var curList = js.Get(i.ToString()).list;
+
+            for(int j = 0; j < curList.Count;j ++)
+            {
+                var curCardJs = curList[j];
+                CardColor curColor = (CardColor)curCardJs.GetInt("CardColor");
+                int curNum = curCardJs.GetInt("CardNum");
+                var curCard = CardList[index].GetComponent<Card>();
+                curCard.cardColor = curColor;
+                curCard.CardNum = curNum;
+                curCard.UpdateCardView();
+                index++;
+            }
+            
+        }
+
+        var pileList = js.Get("7").list;
+        for(int i = 0; i  < pileList.Count; i++)
+        {
+            var curCardJs = pileList[i];
+            CardColor curColor = (CardColor)curCardJs.GetInt("CardColor");
+            int curNum = curCardJs.GetInt("CardNum");
+            var curCard = CardList[index].GetComponent<Card>();
+
+            curCard.cardColor = curColor;
+            curCard.CardNum = curNum;
+            curCard.UpdateCardView();
+            index++;
+        }
+
+
+        ResetGame();
+    }
+
+
+    void PlayDealCard()
+    {
+        for (int i = 0; i < CardPlatform.Length; i++)
         {
             var curCardList = CardPlatform[i];
-            for(int j = 0; j < curCardList.Count;j++)
+            for (int j = 0; j < curCardList.Count; j++)
             {
                 CardAbstract root = PlatformPlace[i].GetComponent<CardAbstract>();
                 var curCard = curCardList[j];
@@ -301,23 +356,24 @@ public class LevelMgr : MonoBehaviour {
 
                 MTSequence seq = null;
 
-                if(j == curCardList.Count - 1)
+                if (j == curCardList.Count - 1)
                 {
                     seq = new MTSequence(
-                        new MTDelayTime(1f), 
-                        new MTMoveToWorld(i * 0.05f + j * 0.04f , tarPos), 
-                        new MTRotateTo(0.2f , new Vector3(0, 0, 0)),
+                        new MTDelayTime(1f),
+                        new MTMoveToWorld(i * 0.05f + j * 0.04f, tarPos),
+                        new MTRotateTo(0.2f, new Vector3(0, 0, 0)),
                         new MTDelayTime(0.1f),
-                        new MTCallFunc(()=> curCard.transform.eulerAngles = Vector3.zero));
-                }else
+                        new MTCallFunc(() => curCard.transform.eulerAngles = Vector3.zero));
+                }
+                else
                 {
-                    seq = new MTSequence( new MTDelayTime(1f),new MTMoveToWorld(i * 0.05f + j * 0.04f, tarPos));
+                    seq = new MTSequence(new MTDelayTime(1f), new MTMoveToWorld(i * 0.05f + j * 0.04f, tarPos));
                 }
                 CardAbstract preCard = root;
                 if (j != 0)
                 {
-                   preCard =  curCardList[j - 1].GetComponent<CardAbstract>();
-                    
+                    preCard = curCardList[j - 1].GetComponent<CardAbstract>();
+
                 }
 
                 var cardSc = curCard.GetComponent<CardAbstract>();
@@ -328,12 +384,7 @@ public class LevelMgr : MonoBehaviour {
                 curCard.RunActions(seq);
             }
         }
-
-
-        StartCoroutine(SetPile(index));
-
     }
-
 
     public void AddAction(CardAction action)
     {

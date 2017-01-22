@@ -73,8 +73,13 @@ public class Card : CardAbstract {
         if (CardNum <= 10)
         {
             Center.transform.localScale = new Vector3(2f, 2f, 1);
+        }else
+        {
+            Center.transform.localScale = new Vector3(0.8f, 0.8f, 1);
         }
- 
+
+        gameObject.name = "card " + cardColor.ToString() + CardNum.ToString();
+
     }
 
     public override bool isUp()
