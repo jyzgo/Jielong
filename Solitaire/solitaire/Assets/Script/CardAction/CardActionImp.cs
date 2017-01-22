@@ -34,7 +34,8 @@ public class CardActionImp : CardAction {
     public override void DoAction()
     {
 
-
+        var gameState = LevelMgr.current._gameState;
+        UpdateGameState(_mainCard, _otherCard);
         if (_otherCard.cardState == CardState.InPile)
         {
             LevelMgr.current.RemoveFromPile(_otherCard.gameObject);
@@ -50,7 +51,10 @@ public class CardActionImp : CardAction {
         _mainCard.nextCard = _otherCard;
 
         _otherCard.transform.parent = _mainCard.transform;
-        _otherCard.DetachCardFromOriginal();
+        if(_otherCard.DetachCardFromOriginal())
+        {
+            gameState.AddScore(gameState.FlipPlatCard());
+        }
 
         _otherCard.preCard = _mainCard;
 
@@ -59,13 +63,17 @@ public class CardActionImp : CardAction {
         if(LevelMgr.current.CheckSuccess())
         {
             LevelMgr.current.ToWinState();
-        } 
+        }
+
+      
+
+        
     }
 
     public override void ReverseAction()
     {
 
-        Debug.Log("reverse action");
+        var gameState = LevelMgr.current._gameState;
         _mainCard.nextCard = null;
         _otherCard.preCard = _otherOriginalPreCard;
        // _otherCard.transform.parent = _originalTrans;
@@ -76,6 +84,7 @@ public class CardActionImp : CardAction {
         {
             if(_otherOriginalPreCard.preCard != null)
             {
+                gameState.AddScore(gameState.FlipPlatCard() * -1);
                 _otherOriginalPreCard.gameObject.RunActions(new MTRotateTo(0.2f, new Vector3(0, 180, 0)));
             }
         }
@@ -88,6 +97,41 @@ public class CardActionImp : CardAction {
             LevelMgr.current.RefreshPileReady();
         }
 
+       ;
+        gameState.AddScore(addScoreFrom *-1);
+        gameState.AddScore(gameState.Reverse());
+        LevelMgr.current.UpdateUI();
+
+    }
+
+    int addScoreFrom = 0;
+    public void UpdateGameState(CardAbstract mainCard,CardAbstract othCard)
+    {
+
+        int addScore = 0;
+        var gameState = LevelMgr.current._gameState;
+
+        if (othCard.cardState == CardState.InPile && mainCard.cardState == CardState.InTarget)
+        {
+
+            addScore = gameState.FromPileToTarget();
+        }
+        else if (othCard.cardState == CardState.InPlatform && mainCard.cardState == CardState.InTarget)
+        {
+            addScore = gameState.FromPlatToTarget();
+        }
+        else if (othCard.cardState == CardState.InPile && mainCard.cardState == CardState.InPlatform)
+        {
+            addScore = gameState.FromPileToPlat();
+        }
+        else if (othCard.cardState == CardState.InTarget && mainCard.cardState == CardState.InPlatform)
+        {
+            addScore = gameState.FromTarToPlat();
+        }
+
+
+        addScoreFrom = gameState.AddScore(addScore);
+        LevelMgr.current.UpdateUI();
     }
 
 

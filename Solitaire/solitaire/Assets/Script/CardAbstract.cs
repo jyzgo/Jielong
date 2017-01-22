@@ -84,35 +84,11 @@ public class CardAbstract : MonoBehaviour
         cardAction.DoAction();
         LevelMgr.current.AddAction(cardAction);
 
-
-        return;
-
-        if(otherCard.cardState == CardState.InPile)
-        {
-            LevelMgr.current.RemoveFromPile(otherCard.gameObject);
-            LevelMgr.current.RefreshPileReady();
-
-        }
-
-        if(cardState == CardState.InTarget)
-        {
-            otherCard.nextCard = null; 
-        }
-        otherCard.cardState = cardState;
-        nextCard = otherCard;
-        
-        otherCard.transform.parent = transform;
-        otherCard.DetachCardFromOriginal();
-
-        otherCard.preCard = this;
-     
-        otherCard.RunAction(new MTMoveToWorld(0.1f, GetNextPos()));
-
     }
 
 
 
-    public void DetachCardFromOriginal()
+    public bool DetachCardFromOriginal()
     {
         if (preCard != null)
         {
@@ -120,8 +96,10 @@ public class CardAbstract : MonoBehaviour
             if (preCard.cardState == CardState.InPlatform)
             {
                 preCard.FlipCard();
+                return true;
             }
         }
+        return false;
 
     }
 

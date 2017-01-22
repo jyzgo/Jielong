@@ -39,6 +39,7 @@ public class LevelMgr : MonoBehaviour {
     public GameObject WinCanvas;
 
 
+    Lang _langSet;
 
     List<CardAction> _CardActions = new List<CardAction>();
 
@@ -46,7 +47,43 @@ public class LevelMgr : MonoBehaviour {
 
     public Transform start;
 
-    public Text text;
+    public Text Score;
+    public Text UseTime;
+    public Text UseTime2;
+    public Text Moves;
+
+    public GameState _gameState;
+
+  
+    public void UpdateUI()
+    {
+        
+        Score.text = _langSet.GetLang(LangEnum.Score) +":" + _gameState.GetScore().ToString();
+        UpdateMoves();
+
+    }
+
+    public void UpdateMoves()
+    {
+        Moves.text = _langSet.GetLang(LangEnum.Moves) + ":" + _gameState.Moves.ToString();
+    }
+
+    public void UpdateTime()
+    {
+        UseTime.text = _langSet.GetLang(LangEnum.Time) + ":" + _gameState.GetTime();
+    }
+
+
+    IEnumerator TimeTick()
+    {
+        while(true)
+        {
+            yield return new WaitForSeconds(1f);
+            _gameState.Tick();
+            UpdateTime();
+
+        }
+    }
 
 
 	StateMachine<LevelState> fsm;
@@ -96,15 +133,36 @@ public class LevelMgr : MonoBehaviour {
         
     }
 
-
+    SettingMgr _setting;
+    IEnumerator _timeTick;
     void Awake()
 	{
+        _langSet = new Lang();
+        _langSet.Init();
+        _setting = GetComponent<SettingMgr>();
+        if(_setting._state == PlayState.Normal)
+        {
+            _gameState = new NormalState();
+        }else
+        {
+            _gameState = new VegasState();
+        }
+        _gameState.Init();
+
+        UpdateUI();
+        UpdateMoves();
+        _timeTick = TimeTick();
+        StartCoroutine(_timeTick);
+
+
         current = this;
         GenCard();
         CleanCard();
         InitCardPlatform();
         fsm = StateMachine<LevelState>.Initialize(this, LevelState.Playing);
     }
+
+    
 
     List<GameObject> CardList = new List<GameObject>();
     List<CardAbstract> _platformList = new List<CardAbstract>();
@@ -373,7 +431,6 @@ public class LevelMgr : MonoBehaviour {
                 }
 
                 var cardSc = curCard.GetComponent<CardAbstract>();
-                //preCard.PutCard(cardSc,false);
                 cardSc.cardState = CardState.InPlatform;
                 cardSc.preCard = preCard;
                 preCard.nextCard = cardSc;
@@ -445,6 +502,8 @@ public class LevelMgr : MonoBehaviour {
 
     }
 
+    public bool isAutoFinish = true;
+
     public bool CheckFinish()
     {
         if(_pileList.Count != 0 || _pileReadyList.Count != 0)
@@ -466,16 +525,27 @@ public class LevelMgr : MonoBehaviour {
 
         return Pile.transform.position + Vector3.back * 0.1f;
     }
+
+    public int flipNum = 3;
     public void FlipPile()
     {
-        if (_pileList.Count > 0)
+        var flipCardList = new List<GameObject>();
+        
+        for(int i = _pileList.Count - 1, count = flipNum; i >= 0 && count > 0; i--,count--)
+        {
+            flipCardList.Add(_pileList[i]);
+        }
+
+        if(flipCardList.Count> 0 )
         {
             var lastCard = _pileList[_pileList.Count - 1];
             var flipCardAction = new FlipCardAction();
-            flipCardAction.Init(lastCard);
+            flipCardAction.Init(flipCardList);
             flipCardAction.DoAction();
             AddAction(flipCardAction);
         }
+
+
     }
 
     public void RefreshPileReady()
@@ -548,7 +618,6 @@ public class LevelMgr : MonoBehaviour {
 
         MenuCanvas.SetActive(true);
         WinCanvas.SetActive(false);
-        text.text = "Default";
         NewGame();
 
     }
@@ -573,7 +642,6 @@ public class LevelMgr : MonoBehaviour {
 
 	void Win_Enter()
 	{
-        text.text = "You win";
         MenuCanvas.SetActive(false);
         WinCanvas.SetActive(true);
        // yield return null;

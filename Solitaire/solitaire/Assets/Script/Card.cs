@@ -190,18 +190,26 @@ public class Card : CardAbstract {
     {
         if(cardState == CardState.InPile)
         {
-            if (isUp() == false)
+            if (isUp() == false )
             {
                 LevelMgr.current.FlipPile();
          
             }else
             {
-                FindBestCard();
+                if (LevelMgr.current.isAutoFinish)
+                {
+                    FindBestCard();
+                }
+                else
+                {
+                    BackToOriginalPos();
+                }
+
                 
             }
         }else
         {
-            if (isUp())
+            if (isUp() && LevelMgr.current.isAutoFinish)
             {
                 FindBestCard();
             }else
