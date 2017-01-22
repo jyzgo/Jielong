@@ -349,10 +349,6 @@ public class Card : CardAbstract {
             return false;
         }
 
-        if(cardState != CardState.InTarget && card.cardState == CardState.InTarget)
-        {
-            return false;
-        }
 
         if(cardState == CardState.InPlatform)
         {

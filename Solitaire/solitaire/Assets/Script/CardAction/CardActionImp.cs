@@ -55,6 +55,11 @@ public class CardActionImp : CardAction {
         _otherCard.preCard = _mainCard;
 
         _otherCard.RunAction(new MTMoveToWorld(0.1f,_mainCard.GetNextPos()));
+       
+        if(LevelMgr.current.CheckSuccess())
+        {
+            LevelMgr.current.ToWinState();
+        } 
     }
 
     public override void ReverseAction()

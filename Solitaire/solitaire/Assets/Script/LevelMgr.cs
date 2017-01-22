@@ -15,15 +15,29 @@ public struct CardStruct
 
 }
 
+
+[Serializable]
+public struct CardData
+{
+   public CardColor cardColor;
+
+    [Range(1, 13)]
+    public int CardNum;
+}
+
 public class LevelMgr : MonoBehaviour {
 
 	public enum LevelState
 	{
-		Default,
 		Playing,
-		Win,
-		Lose
+		Win
+		
 	}
+
+    public GameObject MenuCanvas;
+    public GameObject WinCanvas;
+
+
 
     List<CardAction> _CardActions = new List<CardAction>();
 
@@ -89,7 +103,7 @@ public class LevelMgr : MonoBehaviour {
         GenCard();
         CleanCard();
         InitCardPlatform();
-        fsm = StateMachine<LevelState>.Initialize(this, LevelState.Default);
+        fsm = StateMachine<LevelState>.Initialize(this, LevelState.Playing);
 
         
 
@@ -365,13 +379,38 @@ public class LevelMgr : MonoBehaviour {
 
     }
 
-    public void CheckFinish()
+    public bool CheckSuccess()
+    {
+        if (_pileList.Count != 0 || _pileReadyList.Count != 0)
+        {
+            return false;
+        }
+
+        for (int i = 0; i < _platformList.Count; i++)
+        {
+            if(_platformList[i].GetTopCard() != _platformList[i])
+            {
+                return false;
+            }
+        }
+
+        return true;
+
+    }
+
+    public bool CheckFinish()
     {
         if(_pileList.Count != 0 || _pileReadyList.Count != 0)
         {
-            return;
+            return false;
         }
 
+        for(int i  = 0; i  < _platformList.Count;i++)
+        {
+
+        }
+
+        return true;
     }
 
 
@@ -446,21 +485,7 @@ public class LevelMgr : MonoBehaviour {
     public List<GameObject> _pileList = new List<GameObject>();
 
 
-	void Default_Enter()
-	{
 
-        text.text = "Default";
-        ResetGame();
-
-    }
-	
-	// Update is called once per frame
-	void Default_Update () {
-
-
-
-
-    }
 
     public void ToPlayState()
     {
@@ -472,12 +497,6 @@ public class LevelMgr : MonoBehaviour {
         fsm.ChangeState(LevelState.Win);
     }
 
-    public void ToLoseState()
-    {
-        
-        fsm.ChangeState(LevelState.Lose);
-        
-    }
 
 
 
@@ -485,7 +504,10 @@ public class LevelMgr : MonoBehaviour {
 	void Playing_Enter()
 	{
 
-
+        MenuCanvas.SetActive(true);
+        WinCanvas.SetActive(false);
+        text.text = "Default";
+        NewGame();
 
     }
 
@@ -507,46 +529,15 @@ public class LevelMgr : MonoBehaviour {
 
 
 
-	IEnumerator Win_Enter()
+	void Win_Enter()
 	{
         text.text = "You win";
-        yield return null;
+        MenuCanvas.SetActive(false);
+        WinCanvas.SetActive(true);
+       // yield return null;
 
 	
 	}
-
-
-
-	void Win_Update () {
-
-
-	}
-
-    const float END_FADE_TIME = 3f;
-
-	IEnumerator Lose_Enter()
-	{
-        text.text = "You lose";
-        yield return new WaitForSeconds(END_FADE_TIME);
-        fsm.ChangeState(LevelState.Default);
-
-
-    }
-
-	void Lose_Update () {
-
-        
-
-	}
-
-    float FADE_IN_TIME = 1.5f;
-	IEnumerator Reset_Enter()
-	{
-
-       
-        yield return null;
-        
-    }
 
  
 }

@@ -99,6 +99,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\CardEdit.cs" />
+    <Compile Include="Assets\CardEditMgr.cs" />
+    <Compile Include="Assets\CardLoader.cs" />
     <Compile Include="Assets\Demigiant\DOTweenPro\DOTweenAnimation.cs" />
     <Compile Include="Assets\Lib\MTExtension.cs" />
     <Compile Include="Assets\Lib\MonsterLove\StateMachine\StateMachine.cs" />
@@ -178,6 +181,7 @@
     <Compile Include="Assets\Lib\actions\action_math\MTMathHelper.cs" />
     <Compile Include="Assets\Lib\actions\action_math\MTRandom.cs" />
     <Compile Include="Assets\Lib\actions\action_math\MTSplineMath.cs" />
+    <Compile Include="Assets\ResMgr.cs" />
     <Compile Include="Assets\Script\Card.cs" />
     <Compile Include="Assets\Script\CardAbstract.cs" />
     <Compile Include="Assets\Script\CardAction\ActionInPile.cs" />
@@ -190,6 +194,26 @@
     <Compile Include="Assets\Script\CardTargetRoot.cs" />
     <Compile Include="Assets\Script\LevelMgr.cs" />
     <Compile Include="Assets\Script\PileReset.cs" />
+    <Compile Include="Assets\Script\SeedData.cs" />
+    <Compile Include="Assets\Script\SeedMgr.cs" />
+    <Compile Include="Assets\Script\core\ModelBinder.cs" />
+    <Compile Include="Assets\Script\core\SingleObject.cs" />
+    <Compile Include="Assets\Script\core\Singleton.cs" />
+    <Compile Include="Assets\Script\utils\AssetManager.cs" />
+    <Compile Include="Assets\Script\utils\ColorUtil.cs" />
+    <Compile Include="Assets\Script\utils\DataUtil.cs" />
+    <Compile Include="Assets\Script\utils\DirectionUtil.cs" />
+    <Compile Include="Assets\Script\utils\EventUtil.cs" />
+    <Compile Include="Assets\Script\utils\FileUtil.cs" />
+    <Compile Include="Assets\Script\utils\LZF.cs" />
+    <Compile Include="Assets\Script\utils\MTExtension.cs" />
+    <Compile Include="Assets\Script\utils\MTJSON.cs" />
+    <Compile Include="Assets\Script\utils\NotificationCenter.cs" />
+    <Compile Include="Assets\Script\utils\PathFind.cs" />
+    <Compile Include="Assets\Script\utils\ScrollRectWrapper.cs" />
+    <Compile Include="Assets\Script\utils\StringUtil.cs" />
+    <Compile Include="Assets\Script\utils\TimeUtil.cs" />
+    <Compile Include="Assets\Script\utils\TransformUtil.cs" />
     <Compile Include="Assets\Test.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\SyntaxTree\UnityVS\2015\UnityVS.CSharp.targets" />
