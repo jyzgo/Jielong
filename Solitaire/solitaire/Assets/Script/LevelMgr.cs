@@ -77,6 +77,7 @@ public class LevelMgr : MonoBehaviour {
     public void UpdateTime()
     {
         UseTime.text = _langSet.GetLang(LangEnum.Time) + ":" + _gameState.GetTime();
+        UseTime2.text = _langSet.GetLang(LangEnum.Time) + ":" + _gameState.GetTime();
     }
 
 

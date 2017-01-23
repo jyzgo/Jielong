@@ -182,7 +182,6 @@
     <Compile Include="Assets\Lib\actions\action_math\MTMathHelper.cs" />
     <Compile Include="Assets\Lib\actions\action_math\MTRandom.cs" />
     <Compile Include="Assets\Lib\actions\action_math\MTSplineMath.cs" />
-    <Compile Include="Assets\PanelTouch.cs" />
     <Compile Include="Assets\ResMgr.cs" />
     <Compile Include="Assets\Script\Card.cs" />
     <Compile Include="Assets\Script\CardAbstract.cs" />

@@ -129,7 +129,11 @@ public class SettingMgr : MonoBehaviour {
         timermode.isOn = TimeMode== 1;
         lefthanded.isOn = RightHanded== 0;
         autohint.isOn = Hint== 1;
-     
+
+
+        TimeOnlyForm.SetActive(TimeMode == 1);
+        NormalForm.SetActive(TimeMode != 1);
+
 
     }
     void OnsoundToggle(bool b)
@@ -192,10 +196,13 @@ public class SettingMgr : MonoBehaviour {
     }
     void OntimermodeToggle(bool b)
     {
+        TimeOnlyForm.SetActive(b);
+        NormalForm.SetActive(!b);
         Debug.Log("OntimermodeToggle" + b.ToString());
         if (b)
         {
-            TimeMode = 1;   
+            TimeMode = 1;
+           
         }
         else
         {
@@ -261,4 +268,6 @@ public class SettingMgr : MonoBehaviour {
         SaveToFile();
     }
 
+    public GameObject NormalForm;
+    public GameObject TimeOnlyForm;
 }
