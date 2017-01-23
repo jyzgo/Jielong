@@ -99,6 +99,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\BGResize.cs" />
     <Compile Include="Assets\CardEdit.cs" />
     <Compile Include="Assets\CardEditMgr.cs" />
     <Compile Include="Assets\CardLoader.cs" />

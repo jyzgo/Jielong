@@ -140,6 +140,7 @@ public class LevelMgr : MonoBehaviour {
         _langSet = new Lang();
         _langSet.Init();
         _setting = GetComponent<SettingMgr>();
+        _setting.LoadFile();
         if(_setting._state == PlayState.Normal)
         {
             _gameState = new NormalState();

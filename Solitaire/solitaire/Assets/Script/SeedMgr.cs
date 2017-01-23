@@ -32,4 +32,6 @@ public class SeedMgr : MonoBehaviour {
         MTJSONObject js = MTJSON.Deserialize(content);
         LevelMgr.current.LoadGame(js);
     }
+
+
 }
