@@ -139,15 +139,14 @@ public class LevelMgr : MonoBehaviour {
         
     }
 
-    SettingMgr _setting;
+   public SettingMgr _settingMgr;
     IEnumerator _timeTick;
     void Awake()
 	{
         _langSet = new Lang();
         _langSet.Init();
-        _setting = GetComponent<SettingMgr>();
-        _setting.LoadFile();
-        if(_setting._state == PlayState.Normal)
+        _settingMgr.LoadFile();
+        if(_settingMgr._state == PlayState.Normal)
         {
             _gameState = new NormalState();
         }else

@@ -2,6 +2,7 @@
 using System.Collections;
 using System.IO;
 using MTUnity.Utils;
+using UnityEngine.UI;
 
 public enum PlayState
 {
@@ -59,6 +60,18 @@ public class SettingMgr : MonoBehaviour {
             SaveToFile();
         }
     }
+
+
+    public Toggle sound;
+    public Toggle Draw3Tog;
+    public Toggle allwinning;
+    public Toggle vegasmode;
+    public Toggle vegascumulative;
+    public Toggle timermode;
+    public Toggle lefthanded;
+    public Toggle autohint;
+    public Toggle rules;
+
 
     void LoadSetting()
     {
