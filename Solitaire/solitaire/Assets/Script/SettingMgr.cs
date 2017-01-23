@@ -40,13 +40,13 @@ public class SettingMgr : MonoBehaviour {
     public int Hint = 0;// 0 1 2
     public int Draw3 = 0;//bool
     public int VegasCumulative = 0;//bool
-    public int WinningDeals = 0;//int 100
+    public int AllWinning = 0;//int 100
     public int Orientation = 0;//int 0竖 1横 2自动 
 
     public int CongratulationsScreen = 1;//bool
     public int TapMove = 1;//int 0 1 2 on off auto
 
-    public int Time_Moves = 0;//bool
+    public int TimeMode = 0;//bool
     public int RightHanded = 1;//bool
     public void LoadFile()
     {
@@ -70,7 +70,7 @@ public class SettingMgr : MonoBehaviour {
     public Toggle timermode;
     public Toggle lefthanded;
     public Toggle autohint;
-    public Toggle rules;
+
 
 
     void LoadSetting()
@@ -87,18 +87,149 @@ public class SettingMgr : MonoBehaviour {
             Hint = setJs.GetInt(SettingEnum.Hint.ToString());
             Draw3 = setJs.GetInt(SettingEnum.Draw3.ToString());
             VegasCumulative = setJs.GetInt(SettingEnum.VegasCumulative.ToString());
-            WinningDeals = setJs.GetInt(SettingEnum.WinningDeals.ToString());
+            AllWinning = setJs.GetInt(SettingEnum.WinningDeals.ToString());
             Orientation = setJs.GetInt(SettingEnum.Orientation.ToString());
 
             CongratulationsScreen = setJs.GetInt(SettingEnum.CongratulationsScreen.ToString());
             TapMove = setJs.GetInt(SettingEnum.TapMove.ToString());
 
-            Time_Moves = setJs.GetInt(SettingEnum.Time_Moves.ToString());
+            TimeMode = setJs.GetInt(SettingEnum.Time_Moves.ToString());
             RightHanded = setJs.GetInt(SettingEnum.RightHanded.ToString());
         }
 
+        SetToggleState();
+
+        AddToggleListener();
+
 
     }
+
+    void AddToggleListener()
+    {
+        sound.onValueChanged.AddListener(OnsoundToggle);
+        Draw3Tog.onValueChanged.AddListener(OnDraw3Toggle);
+        allwinning.onValueChanged.AddListener(OnallwinningToggle);
+        vegasmode.onValueChanged.AddListener(OnvegasmodeToggle);
+        vegascumulative.onValueChanged.AddListener(OnvegascumulativeToggle);
+        timermode.onValueChanged.AddListener(OntimermodeToggle);
+        lefthanded.onValueChanged.AddListener(OnLefthandedToggle);
+        autohint.onValueChanged.AddListener(OnautohintToggle);
+      
+
+
+    }
+
+    void SetToggleState()
+    {
+        sound.isOn = SoundControl == 1;
+        Draw3Tog.isOn = Draw3== 1;
+        allwinning.isOn = AllWinning== 1;
+        vegasmode.isOn = _state==PlayState.Vegas;
+        vegascumulative.isOn = VegasCumulative== 1;
+        timermode.isOn = TimeMode== 1;
+        lefthanded.isOn = RightHanded== 0;
+        autohint.isOn = Hint== 1;
+     
+
+    }
+    void OnsoundToggle(bool b)
+    {
+        Debug.Log("OnsoundToggle" + b.ToString());
+        if (b)
+        {
+            SoundControl = 1;
+        }else
+        {
+            SoundControl = 0;
+        }
+    }
+    void OnDraw3Toggle(bool b)
+    {
+        Debug.Log("OnDraw3Toggle" + b.ToString());
+        if(b)
+        {
+            Draw3 = 1;
+        }
+        else
+        {
+            Draw3 = 0;
+        }
+    }
+    void OnallwinningToggle(bool b)
+    {
+        Debug.Log("OnallwinningToggle" + b.ToString());
+        if(b)
+        {
+            AllWinning = 1;
+        }
+        else
+        {
+            AllWinning = 0;
+        }
+    }
+    void OnvegasmodeToggle(bool b)
+    {
+        Debug.Log("OnvegasmodeToggle" + b.ToString());
+        if(b)
+        {
+            VegasCumulative = 1;
+        }else
+        {
+            VegasCumulative = 0;
+        }
+    }
+    void OnvegascumulativeToggle(bool b)
+    {
+        Debug.Log("OnvegascumulativeToggle" + b.ToString());
+        if (b)
+        {
+            VegasCumulative = 1;
+        }
+        else
+        {
+            VegasCumulative = 0;
+        }
+    }
+    void OntimermodeToggle(bool b)
+    {
+        Debug.Log("OntimermodeToggle" + b.ToString());
+        if (b)
+        {
+            TimeMode = 1;   
+        }
+        else
+        {
+            TimeMode = 0;
+        }
+    }
+    void OnLefthandedToggle(bool b)
+    {
+        Debug.Log("OnrighthandedToggle" + b.ToString());
+        if (b)
+        {
+            RightHanded = 0;
+        
+        }
+        else
+        {
+            RightHanded = 1;
+        }
+    }
+    void OnautohintToggle(bool b)
+    {
+        Debug.Log("OnautohintToggle" + b.ToString());
+        if (b)
+        {
+            Hint = 1;
+        }
+        else
+        {
+            Hint = 0;
+        }
+    }
+
+
+
 
     string GetPath()
     {
@@ -114,13 +245,13 @@ public class SettingMgr : MonoBehaviour {
         setJs.Set(SettingEnum.Hint.ToString(), Hint);
         setJs.Set(SettingEnum.Draw3.ToString(), Draw3);
         setJs.Set(SettingEnum.VegasCumulative.ToString(), VegasCumulative);
-        setJs.Set(SettingEnum.WinningDeals.ToString(), WinningDeals);
+        setJs.Set(SettingEnum.WinningDeals.ToString(), AllWinning);
         setJs.Set(SettingEnum.Orientation.ToString(), Orientation);
 
         setJs.Set(SettingEnum.CongratulationsScreen.ToString(), CongratulationsScreen);
         setJs.Set(SettingEnum.TapMove.ToString(), TapMove);
 
-        setJs.Set(SettingEnum.Time_Moves.ToString(), Time_Moves);
+        setJs.Set(SettingEnum.Time_Moves.ToString(), TimeMode);
         setJs.Set(SettingEnum.RightHanded.ToString(), RightHanded);
         File.WriteAllText(GetPath(), setJs.ToString());
     }
