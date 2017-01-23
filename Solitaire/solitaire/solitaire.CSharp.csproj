@@ -218,6 +218,7 @@
     <Compile Include="Assets\Script\utils\TimeUtil.cs" />
     <Compile Include="Assets\Script\utils\TransformUtil.cs" />
     <Compile Include="Assets\Test.cs" />
+    <Compile Include="Assets\ToolbarMgr.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\SyntaxTree\UnityVS\2015\UnityVS.CSharp.targets" />
 </Project>

@@ -63,6 +63,12 @@ public class LevelMgr : MonoBehaviour {
 
     }
 
+
+    public void ShowHint()
+    {
+        Debug.Log("Hint");
+    }
+
     public void UpdateMoves()
     {
         Moves.text = _langSet.GetLang(LangEnum.Moves) + ":" + _gameState.Moves.ToString();
