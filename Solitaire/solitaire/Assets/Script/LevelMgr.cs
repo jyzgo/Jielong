@@ -342,6 +342,7 @@ public class LevelMgr : MonoBehaviour {
         {
             return;
         }
+        ToolbarMgr.current.HidePlayMenu();
         lastResetGame = Time.time;
         CleanScore();
         CleanBoard();

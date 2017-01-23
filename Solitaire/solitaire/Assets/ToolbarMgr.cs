@@ -3,6 +3,11 @@ using System.Collections;
 
 public class ToolbarMgr : MonoBehaviour {
 
+    public static ToolbarMgr current;
+    void Awake()
+    {
+        current = this;
+    }
 	// Use this for initialization
 	void Start () {
 	
@@ -16,20 +21,26 @@ public class ToolbarMgr : MonoBehaviour {
     public void ShowPlayMenu()
     {
         Debug.Log("show play menu");
+        PlayCanvas.SetActive(true);
     }
 
     public void HidePlayMenu()
     {
-        Debug.Log("hide playMenu");
+        PlayCanvas.SetActive(false);
     }
 
     public void ShowSettingMenu()
     {
+        SettingMenu.SetActive(true);
         Debug.Log("showSettingMenu");
     }
 
     public void HideSettingMenu()
     {
+        SettingMenu.SetActive(false);
         Debug.Log("hidesettingmenu");
     }
+
+    public GameObject PlayCanvas;
+    public GameObject SettingMenu;
 }
