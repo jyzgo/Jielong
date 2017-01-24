@@ -34,7 +34,7 @@ public class FlipCardAction : CardAction
             pileList.Remove(flipCard.gameObject);
             pileReadyList.Add(flipCard.gameObject);
         }
-
+        SoundManager.Current.Play_flip_pile(0);
         LevelMgr.current.RefreshPileReady();
 
     }
@@ -55,7 +55,7 @@ public class FlipCardAction : CardAction
         }
 
         gameState.AddScore(gameState.Reverse());
-
+        SoundManager.Current.Play_flip_pile(0);
         LevelMgr.current.RefreshPileReady();
 
     }

@@ -63,12 +63,12 @@ public class GameState
     }
 
 
-    float GameTime = 0;
+    public float GameTime = 0;
     public string GetTime()
     {
         if ((int)(GameTime / 60) > 0)
         {
-            return (int)(GameTime / 60) + ":" + (int)(GameTime % 60);
+            return (int)(GameTime / 60) + ":" + ((int)(GameTime % 60)).ToString("00");
         }else
         {
             return ((int)GameTime).ToString();

@@ -79,6 +79,7 @@ public class CardAbstract : MonoBehaviour
     {
 
 
+        SoundManager.Current.Play_put_success(0);
         var cardAction = new CardActionImp();
         cardAction.Init(this, otherCard);
         cardAction.DoAction();

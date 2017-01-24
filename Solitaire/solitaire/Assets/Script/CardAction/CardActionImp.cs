@@ -97,7 +97,9 @@ public class CardActionImp : CardAction {
             LevelMgr.current.RefreshPileReady();
         }
 
-       ;
+
+        SoundManager.Current.Play_put_success(0);
+
         gameState.AddScore(addScoreFrom *-1);
         gameState.AddScore(gameState.Reverse());
         LevelMgr.current.UpdateUI();

@@ -8,6 +8,7 @@ public class RefreshPileAction : CardAction
     public override void DoAction()
     {
         LevelMgr levelMgr = LevelMgr.current;
+        SoundManager.Current.Play_flip_pile(0);
         Record();
         levelMgr._pileList.Clear();
         for (int i = levelMgr._pileReadyList.Count - 1; i >= 0; i--)

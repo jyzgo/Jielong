@@ -83,6 +83,7 @@ public class LevelMgr : MonoBehaviour {
 
     IEnumerator TimeTick()
     {
+        yield return new WaitForSeconds(2f);
         while(true)
         {
             yield return new WaitForSeconds(1f);
@@ -141,6 +142,7 @@ public class LevelMgr : MonoBehaviour {
     }
 
    public SettingMgr _settingMgr;
+    public SoundManager _soundMgr;
     IEnumerator _timeTick;
     void Awake()
 	{
@@ -158,8 +160,7 @@ public class LevelMgr : MonoBehaviour {
 
         UpdateUI();
         UpdateMoves();
-        _timeTick = TimeTick();
-        StartCoroutine(_timeTick);
+
 
 
         current = this;
@@ -355,13 +356,27 @@ public class LevelMgr : MonoBehaviour {
                 index++;
             } 
         }
+        if(_settingMgr.Draw3 == 1)
+        {
+            flipNum = 3;
+        } else
+        {
+            flipNum = 1;
+        }
+        CleanScore();
         PlayDealCard();
         StartCoroutine(SetPile(index));
     }
 
     void CleanScore()
     {
-
+        _gameState.GameTime = 0f;
+        if (_timeTick != null)
+        {
+            StopCoroutine(_timeTick);
+        }
+        _timeTick = TimeTick();
+        StartCoroutine(_timeTick);
     }
 
     public void LoadGame(MTJSONObject js)
@@ -407,6 +422,7 @@ public class LevelMgr : MonoBehaviour {
 
     void PlayDealCard()
     {
+        _soundMgr.Play_new_game(0.8f);
         for (int i = 0; i < CardPlatform.Length; i++)
         {
             var curCardList = CardPlatform[i];
@@ -652,6 +668,7 @@ public class LevelMgr : MonoBehaviour {
 	{
         MenuCanvas.SetActive(false);
         WinCanvas.SetActive(true);
+        _soundMgr.PlayWinMusic();
        // yield return null;
 
 	

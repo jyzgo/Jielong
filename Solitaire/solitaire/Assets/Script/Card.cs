@@ -244,6 +244,7 @@ public class Card : CardAbstract {
 
     void ShowDisableAnim()
     {
+        SoundManager.Current.Play_shake_card(0f);
         float shakeTime = 0.05f;
         float shakeDis = 0.1f;
         var finalPos = originalPos;
@@ -308,7 +309,7 @@ public class Card : CardAbstract {
 
             }else
             {
-                Debug.Log("card Name is " + card.name);
+               // Debug.Log("card Name is " + card.name);
                 BackToOriginalPos();
             }
             
@@ -346,19 +347,19 @@ public class Card : CardAbstract {
 
         if(cardState == CardState.InPile)
         {
-            Debug.Log("in pile ");
+           // Debug.Log("in pile ");
             return false;
         }
 
         if(nextCard != null)
         {
-            Debug.Log("nextcardNot null");
+           // Debug.Log("nextcardNot null");
             return false;
         }
 
         if(IsPutAble() != true)
         {
-            Debug.Log("unputable");
+            //Debug.Log("unputable");
             return false;
         }
 
@@ -371,7 +372,7 @@ public class Card : CardAbstract {
             }
             else
             {
-                Debug.Log("not met " + " this card  is " + gameObject.name + "other card is " + card);
+              //  Debug.Log("not met " + " this card  is " + gameObject.name + "other card is " + card);
                 return false;
             }
             
@@ -381,13 +382,13 @@ public class Card : CardAbstract {
             {
                 return true;
             }
-            Debug.Log("Not met target");
+            //Debug.Log("Not met target");
             return false;
         }else if(cardState == CardState.InPile)
         {
             return true;
         }
-        Debug.Log("nothing");
+        //Debug.Log("nothing");
         return false;
     }
 

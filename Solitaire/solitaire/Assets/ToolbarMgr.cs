@@ -8,37 +8,40 @@ public class ToolbarMgr : MonoBehaviour {
     {
         current = this;
     }
-	// Use this for initialization
-	void Start () {
-	
-	}
-	
-	// Update is called once per frame
-	void Update () {
-	
-	}
 
     public void ShowPlayMenu()
     {
-        Debug.Log("show play menu");
+        SoundManager.Current.Play_ui_open(0);
+        //Debug.Log("show play menu");
         PlayCanvas.SetActive(true);
     }
 
     public void HidePlayMenu()
     {
+        if (PlayCanvas.activeSelf)
+        {
+            SoundManager.Current.Play_ui_close(0);
+        }
         PlayCanvas.SetActive(false);
+       
     }
 
     public void ShowSettingMenu()
     {
+        SoundManager.Current.Play_ui_open(0);
         SettingMenu.SetActive(true);
-        Debug.Log("showSettingMenu");
+        //Debug.Log("showSettingMenu");
     }
 
     public void HideSettingMenu()
     {
+        if (SettingMenu.activeSelf)
+        {
+            SoundManager.Current.Play_ui_close(0);
+        }
         SettingMenu.SetActive(false);
-        Debug.Log("hidesettingmenu");
+
+        //  Debug.Log("hidesettingmenu");
     }
 
     public GameObject PlayCanvas;

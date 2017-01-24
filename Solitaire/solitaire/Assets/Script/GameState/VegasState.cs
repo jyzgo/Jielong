@@ -4,13 +4,12 @@ using System.Collections;
 public class VegasState : GameState {
     public override int FromPileToTarget()
     {
-        Debug.Log("lt");
+
         return 5;
     }
 
     public override int FromPlatToTarget()
     {
-        Debug.Log("pt");
         return 5;
     }
 

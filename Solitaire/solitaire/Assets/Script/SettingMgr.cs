@@ -33,6 +33,14 @@ public enum SettingEnum
 
 
 public class SettingMgr : MonoBehaviour {
+
+    public static SettingMgr current;
+    void Awake()
+    {
+
+        current = this;
+    }
+
     const string settingFileName = "setting.dt";
     public PlayState _state = PlayState.Normal;
 
@@ -136,9 +144,15 @@ public class SettingMgr : MonoBehaviour {
 
 
     }
+
+    void PlayToggleSound()
+    {
+        SoundManager.Current.Play_switch(0);
+    }
     void OnsoundToggle(bool b)
     {
-        Debug.Log("OnsoundToggle" + b.ToString());
+        //Debug.Log("OnsoundToggle" + b.ToString());
+        PlayToggleSound(); 
         if (b)
         {
             SoundControl = 1;
@@ -149,8 +163,9 @@ public class SettingMgr : MonoBehaviour {
     }
     void OnDraw3Toggle(bool b)
     {
-        Debug.Log("OnDraw3Toggle" + b.ToString());
-        if(b)
+        PlayToggleSound();
+        // Debug.Log("OnDraw3Toggle" + b.ToString());
+        if (b)
         {
             Draw3 = 1;
         }
@@ -161,8 +176,9 @@ public class SettingMgr : MonoBehaviour {
     }
     void OnallwinningToggle(bool b)
     {
-        Debug.Log("OnallwinningToggle" + b.ToString());
-        if(b)
+        PlayToggleSound();
+        // Debug.Log("OnallwinningToggle" + b.ToString());
+        if (b)
         {
             AllWinning = 1;
         }
@@ -173,8 +189,9 @@ public class SettingMgr : MonoBehaviour {
     }
     void OnvegasmodeToggle(bool b)
     {
-        Debug.Log("OnvegasmodeToggle" + b.ToString());
-        if(b)
+        PlayToggleSound();
+        //Debug.Log("OnvegasmodeToggle" + b.ToString());
+        if (b)
         {
             VegasCumulative = 1;
         }else
@@ -184,7 +201,8 @@ public class SettingMgr : MonoBehaviour {
     }
     void OnvegascumulativeToggle(bool b)
     {
-        Debug.Log("OnvegascumulativeToggle" + b.ToString());
+        PlayToggleSound();
+        // Debug.Log("OnvegascumulativeToggle" + b.ToString());
         if (b)
         {
             VegasCumulative = 1;
@@ -196,9 +214,10 @@ public class SettingMgr : MonoBehaviour {
     }
     void OntimermodeToggle(bool b)
     {
+        PlayToggleSound();
         TimeOnlyForm.SetActive(b);
         NormalForm.SetActive(!b);
-        Debug.Log("OntimermodeToggle" + b.ToString());
+        //Debug.Log("OntimermodeToggle" + b.ToString());
         if (b)
         {
             TimeMode = 1;
@@ -211,7 +230,8 @@ public class SettingMgr : MonoBehaviour {
     }
     void OnLefthandedToggle(bool b)
     {
-        Debug.Log("OnrighthandedToggle" + b.ToString());
+        PlayToggleSound();
+        //Debug.Log("OnrighthandedToggle" + b.ToString());
         if (b)
         {
             RightHanded = 0;
@@ -224,7 +244,8 @@ public class SettingMgr : MonoBehaviour {
     }
     void OnautohintToggle(bool b)
     {
-        Debug.Log("OnautohintToggle" + b.ToString());
+        PlayToggleSound();
+        //Debug.Log("OnautohintToggle" + b.ToString());
         if (b)
         {
             Hint = 1;
