@@ -21,10 +21,6 @@ public class RightHandMgr : MonoBehaviour {
         current = this;
     }
 
-	// Use this for initialization
-	void Start () {
-
-	}
 
 
     HashSet<CardAbstract> _cardSet = new HashSet<CardAbstract>();

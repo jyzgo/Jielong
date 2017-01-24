@@ -448,7 +448,6 @@ public class LevelMgr : MonoBehaviour {
                         new MTDelayTime(1f),
                         new MTMoveToWorld(i * 0.05f + j * 0.04f, tarPos),
                         new MTRotateTo(0.2f, new Vector3(0, 0, 0)),
-                        new MTDelayTime(0.1f),
                         new MTCallFunc(() => curCard.transform.eulerAngles = Vector3.zero));
                 }
                 else

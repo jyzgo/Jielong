@@ -58,6 +58,8 @@ public class CardActionImp : CardAction {
 
         _otherCard.preCard = _mainCard;
 
+        _otherCard.transform.eulerAngles = Vector3.zero;
+        _otherCard.gameObject.StopAllActions();
         _otherCard.RunActions(
             new MTMoveToWorld(0.1f,_mainCard.GetNextPos()),
             new MTCallFunc(()=> _otherCard.transform.eulerAngles = Vector3.zero));
@@ -87,7 +89,9 @@ public class CardActionImp : CardAction {
             if(_otherOriginalPreCard.preCard != null)
             {
                 gameState.AddScore(gameState.FlipPlatCard() * -1);
-                _otherOriginalPreCard.gameObject.RunActions(new MTRotateTo(0.2f, new Vector3(0, 180, 0)));
+                _otherOriginalPreCard.gameObject.RunActions(
+                    new MTRotateTo(0.2f, new Vector3(0, 180, 0)),
+                    new MTCallFunc(()=> _otherOriginalPreCard.transform.eulerAngles = new Vector3(0,180,0)));
             }
         }
 

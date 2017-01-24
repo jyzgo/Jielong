@@ -342,13 +342,33 @@ public class SettingMgr : MonoBehaviour {
 
     public void HideVegasConfirmWindow()
     {
-        VegasConfirmWindow.SetActive(false);
-        if(VegasConfirmWindow.activeSelf)
+        if (VegasConfirmWindow.activeSelf)
         {
             SoundManager.Current.Play_ui_close(0);
         }
+        VegasConfirmWindow.SetActive(false);
+
     }
 
     public GameObject NormalForm;
     public GameObject TimeOnlyForm;
+    public GameObject HowToPlay;
+
+    public void ShowHowToPlay()
+    {
+        if(HowToPlay.activeSelf != true)
+        {
+            SoundManager.Current.Play_ui_open(0);
+        }
+        HowToPlay.SetActive(true);
+       
+    }
+    public void HideHowToPlay()
+    {
+        if (HowToPlay.activeSelf)
+        {
+            SoundManager.Current.Play_ui_close(0);
+        }
+        HowToPlay.SetActive(false);
+    }
 }
