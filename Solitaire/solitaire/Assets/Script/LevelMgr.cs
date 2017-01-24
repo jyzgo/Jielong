@@ -146,24 +146,17 @@ public class LevelMgr : MonoBehaviour {
     IEnumerator _timeTick;
     void Awake()
 	{
+        current = this;
+    }
+
+    void Start()
+    {
         _langSet = new Lang();
         _langSet.Init();
-        _settingMgr.LoadFile();
-        if(_settingMgr._state == PlayState.Normal)
-        {
-            _gameState = new NormalState();
-        }else
-        {
-            _gameState = new VegasState();
-        }
-        _gameState.Init();
-
-        UpdateUI();
-        UpdateMoves();
+        //_settingMgr.LoadFile();
 
 
 
-        current = this;
         GenCard();
         CleanCard();
         InitCardPlatform();
@@ -343,6 +336,21 @@ public class LevelMgr : MonoBehaviour {
         {
             return;
         }
+
+        if (_settingMgr._state == PlayState.Normal)
+        {
+            _gameState = new NormalState();
+        }
+        else
+        {
+            _gameState = new VegasState();
+        }
+        _gameState.Init();
+
+        UpdateUI();
+        UpdateMoves();
+
+
         ToolbarMgr.current.HidePlayMenu();
         lastResetGame = Time.time;
         CleanScore();

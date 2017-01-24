@@ -26,6 +26,8 @@ public enum SettingEnum
 
     Time_Moves,
     RightHanded,
+
+    CumulativeNum,
    
 }
 
@@ -39,6 +41,7 @@ public class SettingMgr : MonoBehaviour {
     {
 
         current = this;
+        LoadFile();
     }
 
     const string settingFileName = "setting.dt";
@@ -56,6 +59,9 @@ public class SettingMgr : MonoBehaviour {
 
     public int TimeMode = 0;//bool
     public int RightHanded = 1;//bool
+
+
+    public int CumulitiveNum = 0;
     public void LoadFile()
     {
         var filePath = GetPath();
@@ -103,6 +109,10 @@ public class SettingMgr : MonoBehaviour {
 
             TimeMode = setJs.GetInt(SettingEnum.Time_Moves.ToString());
             RightHanded = setJs.GetInt(SettingEnum.RightHanded.ToString());
+
+
+
+            CumulitiveNum = setJs.GetInt(SettingEnum.CumulativeNum.ToString());
         }
 
         SetToggleState();
@@ -193,10 +203,11 @@ public class SettingMgr : MonoBehaviour {
         //Debug.Log("OnvegasmodeToggle" + b.ToString());
         if (b)
         {
-            VegasCumulative = 1;
+            _state = PlayState.Vegas;
         }else
         {
-            VegasCumulative = 0;
+            _state = PlayState.Normal;
+
         }
     }
     void OnvegascumulativeToggle(bool b)
@@ -209,6 +220,12 @@ public class SettingMgr : MonoBehaviour {
         }
         else
         {
+            if (VegasCumulative == 1)
+            {
+                ShowVegasConfirmWindow();
+               // gameObject.SetActive(false);
+            }
+
             VegasCumulative = 0;
         }
     }
@@ -281,12 +298,42 @@ public class SettingMgr : MonoBehaviour {
 
         setJs.Set(SettingEnum.Time_Moves.ToString(), TimeMode);
         setJs.Set(SettingEnum.RightHanded.ToString(), RightHanded);
+
+        setJs.Set(SettingEnum.CumulativeNum.ToString(), CumulitiveNum);
         File.WriteAllText(GetPath(), setJs.ToString());
     }
 
     void OnApplicationQuit()
     {
         SaveToFile();
+    }
+
+    public void EraseVegasCumulitive()
+    {
+        CumulitiveNum = 0;
+        HideVegasConfirmWindow();
+    }
+
+    public void SaveVegasCumulitive()
+    {
+        HideVegasConfirmWindow();
+    }
+
+
+    public GameObject VegasConfirmWindow;
+    public void ShowVegasConfirmWindow()
+    {
+        VegasConfirmWindow.SetActive(true);
+        SoundManager.Current.Play_ui_open(0);
+    }
+
+    public void HideVegasConfirmWindow()
+    {
+        VegasConfirmWindow.SetActive(false);
+        if(VegasConfirmWindow.activeSelf)
+        {
+            SoundManager.Current.Play_ui_close(0);
+        }
     }
 
     public GameObject NormalForm;

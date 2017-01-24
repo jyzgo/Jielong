@@ -19,10 +19,19 @@ public class VegasState : GameState {
         return 0;
     }
 
+    bool isCumulitive = false;
     public override void Init()
     {
         base.Init();
         _totalScore = -52;
+        isCumulitive = SettingMgr.current.VegasCumulative == 1;
+        if(isCumulitive)
+        {
+            _totalScore += SettingMgr.current.CumulitiveNum;
+            SettingMgr.current.CumulitiveNum = _totalScore;
+        }
+
+        
     }
 
 
@@ -49,6 +58,10 @@ public class VegasState : GameState {
     public override int AddScore(int score)
     {
         _totalScore += score;
+        if (isCumulitive)
+        {
+            SettingMgr.current.CumulitiveNum = _totalScore;
+        }
 
         return score;
     }
