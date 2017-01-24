@@ -31,6 +31,7 @@ public class RightHandMgr : MonoBehaviour {
 
     public void ResetPos()
     {
+       
         var en = _cardSet.GetEnumerator();
         while(en.MoveNext())
         {

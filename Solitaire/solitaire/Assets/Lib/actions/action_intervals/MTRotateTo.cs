@@ -60,4 +60,64 @@ namespace MTUnity.Actions
         }
 
     }
+
+
+
+    public class MTRotateToWorld : MTFiniteTimeAction
+    {
+
+        #region Constructors
+
+        //        public float Duration{get;private set;}
+        public Vector3 TargetAngle { get; private set; }
+
+        public MTRotateToWorld(float duration, Vector3 toAngle) : base(duration)
+        {
+            Duration = duration;
+            TargetAngle = toAngle;
+        }
+
+        #endregion Constructors
+
+        protected internal override MTActionState StartAction(GameObject target)
+        {
+            return new MTRotateToWorldState(this, target);
+        }
+
+        public override MTFiniteTimeAction Reverse()
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+
+    public class MTRotateToWorldState : MTFiniteTimeActionState
+    {
+
+
+        public MTRotateToWorldState(MTRotateToWorld action, GameObject target)
+            : base(action, target)
+        {
+
+            FromAngle = Target.transform.rotation;
+            ToAngle = Quaternion.Euler(action.TargetAngle);
+            InTime = action.Duration;
+        }
+
+        Quaternion FromAngle;
+        Quaternion ToAngle;
+        float InTime;
+        float curTime = 0f;
+
+        public override void Update(float time)
+        {
+
+            Target.transform.rotation = Quaternion.Lerp(FromAngle, ToAngle, curTime / InTime);
+
+            curTime += Time.deltaTime;
+
+        }
+
+    }
+
 }

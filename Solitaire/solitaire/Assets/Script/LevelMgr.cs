@@ -427,9 +427,9 @@ public class LevelMgr : MonoBehaviour {
         ResetGame();
     }
 
-    IEnumerator DoPlayDeal()
+    void DoPlayDeal()
     {
-        yield return new WaitForSeconds(0.2f);
+      
         _soundMgr.Play_new_game(0.8f);
         for (int i = 0; i < CardPlatform.Length; i++)
         {
@@ -447,7 +447,7 @@ public class LevelMgr : MonoBehaviour {
                     seq = new MTSequence(
                         new MTDelayTime(1f),
                         new MTMoveToWorld(i * 0.05f + j * 0.04f, tarPos),
-                        new MTRotateTo(0.2f, new Vector3(0, 0, 0)),
+                        new MTRotateTo (0.2f, new Vector3(0, 0, 0)),
                         new MTCallFunc(() => curCard.transform.eulerAngles = Vector3.zero));
                 }
                 else
@@ -471,7 +471,8 @@ public class LevelMgr : MonoBehaviour {
     }
     void PlayDealCard()
     {
-        StartCoroutine(DoPlayDeal());
+        DoPlayDeal();
+        //StartCoroutine(DoPlayDeal());
     }
 
     public void AddAction(CardAction action)
@@ -593,7 +594,7 @@ public class LevelMgr : MonoBehaviour {
                 var curPileTrans = PileReadyTrans[j];
                
                 curPileCard.transform.parent = curPileTrans;
-                curPileCard.transform.localRotation = Quaternion.identity;
+                curPileCard.transform.eulerAngles =Vector3.zero;
                 curPileCard.BlockTouch(0.15f);
 
                 curPileCard.StopAllActions();
@@ -648,11 +649,12 @@ public class LevelMgr : MonoBehaviour {
 
 
 
-	void Playing_Enter()
+	IEnumerator Playing_Enter()
 	{
 
         MenuCanvas.SetActive(true);
         WinCanvas.SetActive(false);
+        yield return new WaitForSeconds(1f);
         NewGame();
 
     }
