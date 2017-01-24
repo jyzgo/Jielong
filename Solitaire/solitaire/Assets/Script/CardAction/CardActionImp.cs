@@ -58,7 +58,9 @@ public class CardActionImp : CardAction {
 
         _otherCard.preCard = _mainCard;
 
-        _otherCard.RunAction(new MTMoveToWorld(0.1f,_mainCard.GetNextPos()));
+        _otherCard.RunActions(
+            new MTMoveToWorld(0.1f,_mainCard.GetNextPos()),
+            new MTCallFunc(()=> _otherCard.transform.eulerAngles = Vector3.zero));
        
         if(LevelMgr.current.CheckSuccess())
         {

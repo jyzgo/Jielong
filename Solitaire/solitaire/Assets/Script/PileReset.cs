@@ -9,9 +9,10 @@ public class PileReset : CardAbstract {
 	}
 	
 	// Update is called once per frame
-	void Update () {
-	
+	void OnMouseDown () {
+        LevelMgr.current.RefreshPile();
 	}
+
 
 
 }
