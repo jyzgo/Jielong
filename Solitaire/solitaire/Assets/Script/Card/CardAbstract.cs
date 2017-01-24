@@ -6,6 +6,11 @@ using System.Collections.Generic;
 public class CardAbstract : MonoBehaviour
 {
 
+    public virtual void Start()
+    {
+        RightHandMgr.current.AddCard(this);
+    }
+
     public CardColor cardColor;
     [Range(1, 13)]
     public int CardNum;

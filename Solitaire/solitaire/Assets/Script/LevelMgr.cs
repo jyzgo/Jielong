@@ -427,9 +427,9 @@ public class LevelMgr : MonoBehaviour {
         ResetGame();
     }
 
-
-    void PlayDealCard()
+    IEnumerator DoPlayDeal()
     {
+        yield return new WaitForSeconds(0.2f);
         _soundMgr.Play_new_game(0.8f);
         for (int i = 0; i < CardPlatform.Length; i++)
         {
@@ -469,6 +469,10 @@ public class LevelMgr : MonoBehaviour {
                 curCard.RunActions(seq);
             }
         }
+    }
+    void PlayDealCard()
+    {
+        StartCoroutine(DoPlayDeal());
     }
 
     public void AddAction(CardAction action)

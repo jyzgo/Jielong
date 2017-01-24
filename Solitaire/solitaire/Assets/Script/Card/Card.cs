@@ -29,8 +29,8 @@ public class Card : CardAbstract {
     public Text num;
 
 	// Use this for initialization
-	void Start () {
-
+	public override void Start () {
+        base.Start();
         _disAble = DisableCard(0.2f);
         UpdateCardView();
 	}

@@ -84,6 +84,7 @@ public class CardEditMgr : MonoBehaviour {
         }
 
         string fileName = Application.persistentDataPath+ "/" + saveFileName;
+        Debug.Log("f " + fileName);
         File.WriteAllText(fileName, data.ToString());
 
     }

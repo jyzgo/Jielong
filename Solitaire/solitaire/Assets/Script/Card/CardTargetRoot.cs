@@ -9,6 +9,11 @@ public class CardTargetRoot : CardAbstract
         cardState = CardState.InTarget;
     }
 
+    public override void Start()
+    {
+        base.Start();
+    }
+
     public override bool isCardPutable(CardAbstract card)
     {
         if (nextCard == null && card.CardNum == 1)

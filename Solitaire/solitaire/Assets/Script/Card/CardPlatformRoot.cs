@@ -18,4 +18,11 @@ public class CardPlatformRoot : CardAbstract {
         return base.GetNextPos(i-1) + nexp ;
 
     }
+
+    public override void Start()
+    {
+        base.Start();
+    }
+
+
 }

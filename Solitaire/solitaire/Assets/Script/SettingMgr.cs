@@ -42,8 +42,20 @@ public class SettingMgr : MonoBehaviour {
 
         current = this;
         LoadFile();
+
     }
 
+
+    void Start()
+    {
+
+        if (RightHanded != 1)
+        {
+            RightHandMgr.current.ResetPos();
+        }
+
+
+    }
     const string settingFileName = "setting.dt";
     public PlayState _state = PlayState.Normal;
 
@@ -248,6 +260,7 @@ public class SettingMgr : MonoBehaviour {
     void OnLefthandedToggle(bool b)
     {
         PlayToggleSound();
+        RightHandMgr.current.ResetPos();
         //Debug.Log("OnrighthandedToggle" + b.ToString());
         if (b)
         {
